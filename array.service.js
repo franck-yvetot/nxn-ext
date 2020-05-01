@@ -1,5 +1,3 @@
-const debug = require("nxn-boot/debug.service")('array');
-
 class ArraySce
 {
     constructor() {

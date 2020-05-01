@@ -1,5 +1,3 @@
-const debug = require("nxn-boot/debug.service")('string');
-
 class stringSce
 {
     constructor() {

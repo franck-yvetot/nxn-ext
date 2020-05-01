@@ -1,5 +1,3 @@
-const debug = require("nxn-boot/debug.service")('Object');
-
 // extensions for the Object
 class ObjectSce
 {
