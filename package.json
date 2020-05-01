@@ -1,0 +1,25 @@
+{
+  "name": "@nxn/ext",
+  "version": "1.0.0",
+  "description": "extensions for common objects such as string, array and object",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franck-yvetot/nxn-ext.git"
+  },
+  "keywords": [
+    "array",
+    "string",
+    "object",
+    "nxn"
+  ],
+  "author": "Franck Yvetot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franck-yvetot/nxn-ext/issues"
+  },
+  "homepage": "https://github.com/franck-yvetot/nxn-ext#readme"
+}
