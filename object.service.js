@@ -28,6 +28,10 @@ class ObjectSce
             await callback(m, p,obj);
         }
     }
+
+    clone(obj) {
+        return { ... obj};
+    }
 }
 
 module.exports = new ObjectSce();
