@@ -3,28 +3,35 @@ const {objectSce,stringSce} = require("@nxn/ext");
 // const querystring = require("querystring");
 const config = require('@nxn/config');
 
-class MapSce
-{
-    constructor() {
-        this.init();
-    }
-
-    init() {
-        // set pipe functions
-        this.pipes = {
+const pipes = {
             id : formatId,
             base64 : b64,
             decode64 : decodeB64,
             md5:md5,
             dateString:dateString,
             timestamp:timestamp,
+    date: d => new Date(d),
+    now: d => new Date(),
+
             url_encode:encodeURIComponent,
             trim: v => v.trim(),
             lower: v => v.lower(),
             upper: v => v.upper(),
+    no_accents : stringSce.removeAccents,
+
             env:env,
-            no_accents : stringSce.removeAccents
+    argv: i => argv(i)
+};
+
+class MapSce
+{
+    constructor() {
+        this.init();
         }
+
+    init() {
+        // set pipe functions
+        this.pipes = pipes;
     }
 
     // add a custom pipe filter
@@ -32,7 +39,7 @@ class MapSce
         this.pipes[k] = f;
     }
 
-    _mapPattern(pattern,obj)
+    mapPattern(pattern,obj)
     {
         let aPipes = pattern.split('|'); // supports yyy.xxx|id|lower|base64
         let patt = aPipes.shift(); 
@@ -57,7 +64,7 @@ class MapSce
         return obj2;
     }
 
-    mapFieldMacros(fname,obj,map) {
+    mapFieldMacros(fname,obj,map,reg) {
         let pattern = map[fname];
 
         if(!pattern)
@@ -68,24 +75,25 @@ class MapSce
             pattern = pattern.trim().slice(1);
             pattern = pattern || fname; // supports = or =name
 
-            return this._mapPattern(pattern,obj);
+            return this.mapPattern(pattern,obj);
         }       
 
-        const rep =pattern.replace(/[%]([a-z 0-9_|]+)[%]/gi,
+        reg = reg || /[%]([a-z 0-9_|]+)[%]/gi;
+        const rep =pattern.replace(reg,
             (match,p1) => { 
-                return this._mapPattern(p1,obj);
+                return this.mapPattern(p1,obj);
             });
 
         return rep;    
     }
 
-    mapObj(map,from)
+    mapObj(map,from,reg)
     {
         let to = {};
 
         objectSce.forEachSync(map,(v,k) => {
             if(typeof v =="string")
-                to[k] = this.mapFieldMacros(k,from,map)
+                to[k] = this.mapFieldMacros(k,from,map,reg)
             else  if(typeof v =="object")
                 to[k] = this.mapObj(v,from);
         });
@@ -142,6 +150,7 @@ function env(v) {
 }
 
 function argv(v) {
+    const i = parseInt(v);
     return process.argv[v];
 }
 
