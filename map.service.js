@@ -39,6 +39,13 @@ class MapSce
         this.pipes[k] = f;
     }
 
+    execPipe(s,pipe) {
+        if(this.pipes[pipe])
+            return this.pipes[pipe](s);
+        else
+            throw new Error("Unknown map pipe "+pipe);
+    }
+
     mapPattern(pattern,obj)
     {
         let aPipes = pattern.split('|'); // supports yyy.xxx|id|lower|base64
@@ -104,8 +111,9 @@ class MapSce
 
 // private functions
 function formatId(itemId) {
-    itemId = itemId.replace(/[_\-.\s]/g,"-");
+    itemId = itemId.replace(/[_\-.\s,]/g,"-");
     itemId = stringSce.removeAccents(itemId);
+    itemId = itemId.toLowerCase();
   
     return itemId;
   }
