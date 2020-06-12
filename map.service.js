@@ -111,8 +111,9 @@ class MapSce
 
 // private functions
 function formatId(itemId) {
-    itemId = itemId.replace(/[_\-.\s,]/g,"-");
     itemId = stringSce.removeAccents(itemId);
+    itemId = itemId.replace(/[^a-z0-9]/gi,"-");
+    itemId = itemId.replace(/[-]+/g,"-");
     itemId = itemId.toLowerCase();
   
     return itemId;
