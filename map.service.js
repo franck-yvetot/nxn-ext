@@ -1,5 +1,5 @@
 const crypto = require('crypto')   
-const {objectSce,stringSce} = require("@nxn/ext");
+const {objectSce,stringSce,arraySce} = require("@nxn/ext");
 // const querystring = require("querystring");
 const config = require('@nxn/config');
 
@@ -85,7 +85,7 @@ class MapSce
             return this.mapPattern(pattern,obj);
         }       
 
-        reg = reg || /[%]([a-z 0-9_|]+)[%]/gi;
+        reg = reg || /[%]([a-z 0-9_|.]+)[%]/gi;
         const rep =pattern.replace(reg,
             (match,p1) => { 
                 return this.mapPattern(p1,obj);
@@ -101,6 +101,24 @@ class MapSce
         objectSce.forEachSync(map,(v,k) => {
             if(typeof v =="string")
                 to[k] = this.mapFieldMacros(k,from,map,reg)
+            else if(v instanceof Array)
+                to[k] = this.mapArray(v,from);
+            else  if(typeof v =="object")
+                to[k] = this.mapObj(v,from);
+        });
+
+        return to;
+    }
+
+    mapArray(map,from,reg)
+    {
+        let to = [];
+
+        arraySce.forEachSync(map,(v,k) => {
+            if(typeof v =="string")
+                to[k] = this.mapFieldMacros(k,from,map,reg)
+            else if(v instanceof Array)
+                to[k] = this.mapArray(v,from);
             else  if(typeof v =="object")
                 to[k] = this.mapObj(v,from);
         });
