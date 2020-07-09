@@ -55,17 +55,38 @@ class MapSce
         // walk the object tree
         let obj2 = obj;
         attribs.forEach(k=> 
+            obj2 = 
             obj2 && 
-                (obj2=obj2[k])
+                    ((k in obj2) && obj2[k])
                     || ''
         );
 
         // now pipe the value to filters
         aPipes.forEach(pipe => {
+            if(pipe.startsWith("="))
+            {
+                if(!obj)
+                obj2 = pipe.trim().slice(1);
+            }
+            else if(pipe.indexOf("(")!=-1)
+            {
+                const matches = pipe.match(/([^()]+\([^()]*\))/);
+                if(!matches)
+                    throw new Error("invalid pipe syntax "+pipe);
+
+                pipe = matches[1];
+                let params = matches[2];
+                aParams = params.split(",");
+
+                if(this.pipes[pipe])
+                    obj2 = this.pipes[pipe](obj2,...aParams);
+            }
+            else
             if(this.pipes[pipe])
                 obj2 = this.pipes[pipe](obj2);
             else
-                throw new Error("invalid ammping pattern, unknown pipe "+pipe);
+                    obj2 = pipe;
+                // throw new Error("invalid ammping pattern, unknown pipe "+pipe);
         });
         
         return obj2;
@@ -85,7 +106,7 @@ class MapSce
             return this.mapPattern(pattern,obj);
         }       
 
-        reg = reg || /[%]([a-z 0-9_|.]+)[%]/gi;
+        reg = reg || /[%]([a-z 0-9_|=.]+)[%]/gi;
         const rep =pattern.replace(reg,
             (match,p1) => { 
                 return this.mapPattern(p1,obj);
@@ -130,7 +151,7 @@ class MapSce
 // private functions
 function formatId(itemId) {
     itemId = stringSce.removeAccents(itemId);
-    itemId = itemId.replace(/[^a-z0-9]/gi,"-");
+    itemId = itemId.replace(/[^a-z0-9.]/gi,"-");
     itemId = itemId.replace(/[-]+/g,"-");
     itemId = itemId.toLowerCase();
   
