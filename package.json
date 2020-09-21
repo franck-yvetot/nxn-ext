@@ -1,6 +1,6 @@
 {
   "name": "@nxn/ext",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "extensions for common objects such as string, array and object",
   "main": "index.js",
   "scripts": {
