@@ -20,6 +20,8 @@ const pipes = {
     no_accents : stringSce.removeAccents,
 
             env:env,
+    capitalise:capitalize,
+    capitalize:capitalize,
     argv: i => argv(i)
 };
 
@@ -205,5 +207,11 @@ function argv(v) {
 function include(path) {
     return config.loadConfig(path);
 }
+
+function capitalize(s) {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
 
 module.exports = new MapSce();
