@@ -117,6 +117,19 @@ class MapSce
         return rep;    
     }
 
+    mapString(pattern,map,reg) {
+        if(!pattern)
+            return null;
+
+        reg = reg || /[%]([a-z 0-9_|=.]+)[%]/gi;
+        const rep =pattern.replace(reg,
+            (match,p1) => { 
+                return this.mapPattern(p1,map);
+            });
+
+        return rep;    
+    }
+
     mapObj(map,from,reg)
     {
         let to = {};
