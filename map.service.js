@@ -138,9 +138,9 @@ class MapSce
             if(typeof v =="string")
                 to[k] = this.mapFieldMacros(k,from,map,reg)
             else if(v instanceof Array)
-                to[k] = this.mapArray(v,from);
+                to[k] = this.mapArray(v,from,reg);
             else  if(typeof v =="object")
-                to[k] = this.mapObj(v,from);
+                to[k] = this.mapObj(v,from,reg);
         });
 
         return to;
@@ -154,9 +154,9 @@ class MapSce
             if(typeof v =="string")
                 to[k] = this.mapFieldMacros(k,from,map,reg)
             else if(v instanceof Array)
-                to[k] = this.mapArray(v,from);
+                to[k] = this.mapArray(v,from,reg);
             else  if(typeof v =="object")
-                to[k] = this.mapObj(v,from);
+                to[k] = this.mapObj(v,from,reg);
         });
 
         return to;
