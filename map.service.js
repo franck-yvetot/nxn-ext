@@ -56,11 +56,17 @@ class MapSce
         
         // walk the object tree
         let obj2 = obj;
-        attribs.forEach(k=> 
-            obj2 = 
-            obj2 && 
-                    ((k in obj2) && obj2[k])
-                    || ''
+        attribs.forEach(k=> {
+            try {
+                obj2 = 
+                    obj2 && typeof obj2 === 'object' &&
+                            ((k in obj2) && obj2[k])
+                            || '';
+            }
+            catch(error) {
+                debug.log("map error "+error.message);
+            }
+        } 
         );
 
         // now pipe the value to filters
