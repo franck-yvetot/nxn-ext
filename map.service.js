@@ -1,25 +1,27 @@
 const crypto = require('crypto')   
-const {objectSce,stringSce,arraySce} = require("@nxn/ext");
+const {objectSce,arraySce} = require("@nxn/ext");
+const stringSce = require("@nxn/ext/string.service");
+
 // const querystring = require("querystring");
 const config = require('@nxn/config');
 
 const pipes = {
-            id : formatId,
-            base64 : b64,
-            decode64 : decodeB64,
-            md5:md5,
-            dateString:dateString,
-            timestamp:timestamp,
+    id : formatId,
+    base64 : b64,
+    decode64 : decodeB64,
+    md5:md5,
+    dateString:dateString,
+    timestamp:timestamp,
     date: d => new Date(d),
     now: d => new Date(),
 
-            url_encode:encodeURIComponent,
-            trim: v => v.trim(),
-            lower: v => v.lower(),
-            upper: v => v.upper(),
+    url_encode:encodeURIComponent,
+    trim: v => v.trim(),
+    lower: v => v.lower(),
+    upper: v => v.upper(),
     no_accents : stringSce.removeAccents,
 
-            env:env,
+    env:env,
     capitalise:capitalize,
     capitalize:capitalize,
     argv: i => argv(i)
@@ -29,7 +31,7 @@ class MapSce
 {
     constructor() {
         this.init();
-        }
+    }
 
     init() {
         // set pipe functions
