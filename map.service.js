@@ -138,6 +138,36 @@ class MapSce
         return rep;    
     }
 
+    mapAttribute(pattern,map,reg) 
+    {
+        if(!pattern)
+            return null;
+
+        reg = reg || /[%]([a-z 0-9_|=.]+)[%]/gi;
+        let p = reg.exec(pattern);
+        if(p)
+        {
+            let rep ='';
+            let p1 = p[1];
+            let rep2 = this.mapPattern(p1,map);
+            if(rep && typeof rep2 == 'string')
+            {
+                if(p[0] == pattern)
+                    // a single string replace
+                    rep = rep2;
+                else
+                    // complex string
+                    rep = this.mapString(pattern,map,reg);
+            }
+            else
+                // object
+                rep = rep2;    
+            return rep;
+        }
+
+    return pattern;                
+    }    
+
     mapObj(map,from,reg)
     {
         let to = {};
