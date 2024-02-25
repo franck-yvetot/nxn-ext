@@ -20,6 +20,7 @@ const pipes = {
     lower: v => v.lower(),
     upper: v => v.upper(),
     no_accents : stringSce.removeAccents,
+    nl: nl,
 
     env:env,
     capitalise:capitalize,
@@ -262,6 +263,13 @@ function include(path) {
 function capitalize(s) {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+function nl(s) {
+    if (typeof s !== 'string') 
+        return '';
+
+    return s+"\n";
 }
 
 
