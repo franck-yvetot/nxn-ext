@@ -21,6 +21,9 @@ const pipes = {
     upper: v => v.upper(),
     no_accents : stringSce.removeAccents,
     nl: nl,
+    string: v => v.toString(),
+    csv,
+    split,
 
     env:env,
     capitalise:capitalize,
@@ -223,8 +226,8 @@ function b64(s) {
 }
   
 function decodeB64(s) {
-// return Buffer.from(s).toString('ascii'); 
-return Buffer.from(s, 'base64').toString('ascii');
+    // return Buffer.from(s).toString('ascii'); 
+    return Buffer.from(s, 'base64').toString('ascii');
 }
   
 function timestamp(date) {
@@ -232,7 +235,7 @@ function timestamp(date) {
     return d.getTime();
 }
   
-  function dateString(date,withSec) {
+function dateString(date,withSec) {
     const d = date || new Date();
   
     return d.getUTCFullYear() + 
@@ -271,6 +274,18 @@ function nl(s) {
 
     return s+"\n";
 }
+
+function string(s) {
+    return s.toString();
+}
+
+function csv(v,sep=",") {
+    return v.join && v.join(sep) || v;
+} 
+
+function split(v,sep=",") {
+    return v.split && v.split(sep) || v;
+} 
 
 
 module.exports = new MapSce();
