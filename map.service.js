@@ -1,6 +1,7 @@
 const crypto = require('crypto')   
 const {objectSce,arraySce} = require("@nxn/ext");
 const stringSce = require("@nxn/ext/string.service");
+const yaml = require('js-yaml');
 
 // const querystring = require("querystring");
 const config = require('@nxn/config');
@@ -17,13 +18,15 @@ const pipes = {
 
     url_encode:encodeURIComponent,
     trim: v => v.trim(),
-    lower: v => v.lower(),
-    upper: v => v.upper(),
+    lower: v => v.toLowerCase(),
+    upper: v => v.toUpperCase(),
     no_accents : stringSce.removeAccents,
     nl: nl,
     string: v => v.toString(),
-    csv,
-    split,
+    csv,split,
+    stringify, json,
+    yaml:yamlDump,
+    yml:yamlDump,
 
     env:env,
     capitalise:capitalize,
@@ -79,18 +82,19 @@ class MapSce
         aPipes.forEach(pipe => {
             if(pipe.startsWith("="))
             {
+                // =litral
                 if(!obj)
-                obj2 = pipe.trim().slice(1);
+                    obj2 = pipe.trim().slice(1);
             }
             else if(pipe.indexOf("(")!=-1)
             {
-                const matches = pipe.match(/([^()]+\([^()]*\))/);
+                const matches = pipe.match(/^(\w+)\(([\w,]+)\)$/);
                 if(!matches)
                     throw new Error("invalid pipe syntax "+pipe);
 
                 pipe = matches[1];
                 let params = matches[2];
-                aParams = params.split(",");
+                let aParams = params.split(",");
 
                 if(this.pipes[pipe])
                     obj2 = this.pipes[pipe](obj2,...aParams);
@@ -120,7 +124,7 @@ class MapSce
             return this.mapPattern(pattern,obj);
         }       
 
-        reg = reg || /[%]([a-z 0-9_|=.]+)[%]/gi;
+        reg = reg || /[%]([a-z 0-9_|=.()]+)[%]/gi;
         const rep =pattern.replace(reg,
             (match,p1) => { 
                 return this.mapPattern(p1,obj);
@@ -280,12 +284,50 @@ function string(s) {
 }
 
 function csv(v,sep=",") {
-    return v.join && v.join(sep) || v;
+    let res = v.join && v.join(sep) ||
+        typeof v == "object" ?
+            Object.values(v).join(sep) 
+            :v;
+    return res;
 } 
 
 function split(v,sep=",") {
     return v.split && v.split(sep) || v;
 } 
 
+function stringify(v) {
+    return JSON.stringify(v);
+}
+
+function json(v) {
+    return JSON.stringify(v);
+}
+
+/**
+ * export as yml
+ * 
+ * %data|yaml% or %data|yaml(id)%
+ * second form : get id from object and use it to export the entry with key.
+ * if id not in object, use key ad literal.
+ * 
+ * @param {*} v 
+ * @param {*} key if key is provided, use it to "index" the object (used for exporting a collection)
+ * @returns 
+ */
+function yamlDump(v,key="") {
+    if(key)
+    {
+        let v2 = {}
+        
+        if(v[key])
+            v2[v[key]] = v;
+        else
+            v2[key] = v;
+
+        return yaml.dump(v2,{quotingType:'"'});
+    }
+    else        
+        return yaml.dump(v,{quotingType:'"'});
+}
 
 module.exports = new MapSce();
